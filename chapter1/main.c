@@ -1,10 +1,8 @@
 #include <stdio.h>
 #include "lex.h"
+#include "plain.h"
 
 int main() {
-   int i;
-   for(i = 0; i < 5; i++) {
-      printf("Token %d %d\n", i, lex());
-   }
+   statements();
    return 0;
 }
