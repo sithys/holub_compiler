@@ -38,51 +38,51 @@ int legal_lookahead(int first_arg, ...) {
             advance();
         }
     }
-    
+
     va_end(args);
     return rval;
 }
 
 void statements() {
-    expression();
-    if(match(SEMI)) {
-        advance();
-    } else {
-        fprintf(stderr, "%d: Inserting missing semicolon\n", yylineno);
-    }
-
-    if(!match(EOI)) {
-        statements();
+    while(!match(EOI)) {
+        expression();
+        if(match(SEMI)) {
+            advance();
+        } else {
+            fprintf(stderr, "%d: Inserting missing semicolon\n", yylineno);
+        }
     }
 }
 
 void expression() {
-    term();
-    expr_prime();
-}
+    if(!legal_lookahead(NUM_OR_ID, LP, 0)) {
+        return;
+    }
 
-void expr_prime() {
-    if(match(PLUS)) {
+    term();
+    while(match(PLUS)) {
         advance();
         term();
-        expr_prime();
     }
 }
 
 void term() {
-    factor();
-    term_prime();
-}
+    if(!legal_lookahead(NUM_OR_ID, LP, 0)) {
+        return;
+    }
 
-void term_prime() {
-    if(match(TIMES)) {
+    factor();
+    while(match(TIMES)) {
         advance();
         factor();
-        term_prime();
     }
 }
 
 void factor() {
+    if(!legal_lookahead(NUM_OR_ID, LP, 0)) {
+        return;
+    }
+
     if(match(NUM_OR_ID)) {
         advance();
     } else if(match(LP)) {
